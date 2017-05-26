@@ -1,0 +1,18 @@
+#!/usr/bin/python
+
+import skew
+from skew.arn import ARN
+
+arn = ARN()
+srv = arn.service.choices()
+srv.sort()
+for service in srv:
+    if service in ["iam", "route53", "s3"]:
+        # skipping global services because the API endpoint fails due to it being a global service. Bug that needs fixing.
+        print '[%s] SKIPPED' % service
+    else:
+        print '[%s]' % service
+        uri = 'arn:aws:' + service + ':*:*:*/*'
+        arn = skew.scan(uri)
+        for i in arn:
+            print i.arn
